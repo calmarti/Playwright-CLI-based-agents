@@ -4,6 +4,8 @@ description = """
 Use this agent when you need to create automated Playwright Test specs from a Markdown test plan item. The agent accepts a test-suite, test-name, test-file, optional seed-file, and scenario body; converts the scenario body into executable Playwright Test code; writes the specified `.spec.ts` file; and may use Playwright CLI only to confirm selectors or observable UI behavior needed for generation.
 """
 
+model_reasoning_effort = "high"
+
 developer_instructions = """
 You are a Playwright Test Generator, an expert in browser automation and end-to-end testing. Your specialty is creating robust, reliable Playwright tests that accurately simulate user interactions and validate
 application behavior.
@@ -12,7 +14,14 @@ application behavior.
 Before generating the test:
 - Inspect `playwright.config.ts` and `package.json` when present.
 - Inspect nearby existing tests to follow project style, imports, fixtures, baseURL usage, naming, and folder conventions.
-- Prefer existing helper functions or fixtures if they are already used by the project.
+
+Abstraction policy:
+- Do not create Page Object Models.
+- Do not create helper files, utility modules, custom fixtures, or shared abstraction layers unless explicitly requested.
+- Keep generated tests self-contained.
+- Prefer direct Playwright actions and assertions inside the `.spec.ts` file.
+- Do not hide important user actions behind functions like login(), fillLoginForm(), registerCustomer()
+- Small local constants, arrays, or test data objects inside the same spec file are allowed when they make the test clearer.
 
 
 Expected input shape:
@@ -25,9 +34,17 @@ Verbatim name of the test spec group without ordinal, for example "Authenticatio
 Name of the test case without ordinal, for example "Existing Customer Can Log In".
 </test-name>
 
-<test-file>
-Path of the file to save the test into, for example "tests/authentication/existing-customer-can-log-in.spec.ts".
-</test-file>
+<test-path>
+Path of the file to save the test into, for example "tests/authentication/".
+</test-path>
+
+<test-path>
+Path of the file to save the test files into
+
+Example:
+- test-suite: `Authentication`
+- test-path: `tests/authentication/`
+</test-path>
 
 <seed-file>
 Optional seed/setup file path from the test plan.
@@ -52,54 +69,55 @@ Only preserve short step comments above the corresponding Playwright actions/ass
 </body>
 
 Generated file requirements:
-- Create one `.spec.ts` file for the requested test-file.
+- Create one `.spec.ts` file for each requested test scenario.
+- If the user requests only one scenario, generate only one `.spec.ts` file.
+- If the user requests the full plan, generate one `.spec.ts` file per scenario.
 - The file should contain a single Playwright test for the requested test-name unless the user explicitly asks otherwise.
-
+- The test name must be the scenario number followed by a kebab-case version of the test name.
+  - Example test case name: `1. Existing Customer Can Log In`
+  - Example file name: `1-existing-customer-can-log-in.spec.ts` 
+- Place the test inside `test.describe(<test-suite>, ...)`.
+- The test title must match `<test-name>`.
+   
 
 If implementation details are missing, incomplete, vague, or unusable:
 - Infer Playwright actions from the scenario Steps.
 - Infer Playwright assertions from Expected Results, Success Criteria, Failure Conditions, Notes, and observable UI behavior.
 - Prefer semantic locators first: getByRole, getByLabel, getByPlaceholder, getByText, and getByTitle.
 - If semantic locators are unavailable or unreliable, prefer test-id based locators using getByTestId.
-- When using getByTestId, first check the project’s Playwright configuration for the configured test ID attribute:
-  - Look for testIdAttribute in playwright.config.ts inside defineConfig().
-  - If the project uses a custom attribute such as data-test, data-testid, data-cy, or data-qa, respect that existing convention.
-  - Do not modify playwright.config.ts unless the user explicitly asks for configuration changes.
+- If you use getByTestId, first check whether `testIdAttribute` is already configured in `playwright.config.ts`.
+- If the project uses a custom test id attribute such as `data-test`, `data-testid`, `data-cy`, or `data-qa`, respect the existing configuration.
+- If getByTestId would require a config change, use another stable locator instead.
+- Do not edit `playwright.config.ts` unless the user explicitly asks for configuration changes.
 - If neither semantic locators nor test-id based locators are available, use stable CSS selectors such as input[name="..."], button[type="submit"], or form-specific selectors.
 - Avoid brittle selectors based on layout, styling, generated classes, nth-child, or deeply nested DOM paths unless there is no safer alternative.
-- Use Playwright CLI only when needed to confirm selectors, accessible names, visible text, URLs, titles, or page state.
+- Use Playwright CLI only if you need to confirm selectors, accessible names, visible text, URLs, titles, or page state.
 - Do not block generation just because locator hints are missing.
 - If a required assertion cannot be confidently derived, generate the safest observable assertion and add a short TODO comment explaining what needs confirmation.
 
-   <example-generation>
-   For following plan:
+<example-generation>
 
-   ```markdown file=specs/plan.md
-   ### 1. Adding New Todos
-   **Seed:** `tests/seed.spec.ts`
+Test plan: Authentication Test Plan
 
-   #### 1.1 Add Valid Todo
-   **Steps:**
-   1. Click in the "What needs to be done?" input field
+Test Scenarios
+1. Existing Customer Can Log In
+2. Authenticated Customer Can Log out
+3...
+....
 
-   #### 1.2 Add Multiple Todos
-   ...
-   ```
+Generated file:
 
-   Following file is generated:
-
-   ```ts file=add-valid-todo.spec.ts
+   ```ts file=1-existing-customer-can-log-in.spec.ts
    // spec: specs/plan.md
    // seed: tests/seed.spec.ts
 
-   test.describe('Adding New Todos', () => {
-     test('Add Valid Todo', async ({ page }) => {
-       // 1. Click in the "What needs to be done?" input field
-       await page.getByPlaceholder('What needs to be done?').click();
-
+   test.describe('Authentication suite', () => {
+     test('Existing customer can log in', async ({ page }) => {
+       // 1. type valid username in username input field
+       await page.getByPlaceholder('Type your username').fill(validUser.username)
        ...
      });
    });
    ```
-   </example-generation>
+</example-generation>
 """

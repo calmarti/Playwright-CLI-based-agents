@@ -23,12 +23,16 @@ English | [🇪🇸 Español](README.es.md)
 
 ## Playwright CLI vs Playwright MCP
 
-PLAYWRIGHT NATIVE AGENTS ARE MCP BASED
+The original Playwright Test Agents are MCP-based and rely on the Model Context Protocol (MCP) tools. 
 
-BUT FROM DATE X (ENLACE A EVIDENCIA) PW/MICROSOFT RECOMMENDS USING PLAYWRIGHT CLI FOR FOLLOWING REASONS
+When agents work with Playwright MCP 
+they are constantly consuming  full accessibility/DOM tree snapshots inside the model context.  
 
-DECIR CUANDO ES MEJOR USAR MCP
+With Playwright CLI, agents work with so-called semantic or ref-snapshots, which are more compact structures. 
 
+In early 2026, Microsoft/Playwright introduced Playwright CLI  and officially recommended it for coding-agent workflows due to significantly lower token consumption, improved session scalability.
+
+Note: There are use cases where MCP-based agents would still be arguably prefered over CLI (e.g. rich exploratory testing sessions,  debugging complex UI bugs). 
 
 --- 
 

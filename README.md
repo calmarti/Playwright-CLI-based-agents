@@ -115,7 +115,11 @@ You need to use at least Node 20 (*Node 22 is recommended)*
 ```sh
 npm -D install
 ```
+### Install Playwright CLI (globally)
 
+```sh
+npm install -g @playwright/cli
+```
 ### Project configuration and test data
 
 - Out of the box the project is configured to test a demo site (`parabank.parasoft.com`) and has a test user credentials in .env file. You should update these settings as follows:

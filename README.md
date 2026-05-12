@@ -28,7 +28,7 @@ The original Playwright Test Agents are MCP-based and rely on the Model Context 
 When agents work with Playwright MCP 
 they are constantly consuming  full accessibility/DOM tree snapshots inside the model context.  
 
-With Playwright CLI, agents work with so-called semantic or ref-snapshots, which are more compact structures. 
+With Playwright CLI, agents work with so-called semantic or ref-based snapshots, which are more compact structures. 
 
 In early 2026, Microsoft/Playwright introduced Playwright CLI  and officially recommended it for coding-agent workflows due to significantly lower token consumption, improved session scalability.
 

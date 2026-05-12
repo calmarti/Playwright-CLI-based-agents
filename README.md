@@ -30,7 +30,7 @@ they are constantly consuming  full accessibility/DOM tree snapshots inside the 
 
 With Playwright CLI, agents work with so-called semantic or ref-based snapshots, which are more compact structures. 
 
-**In early 2026, Playwright introduced [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), "a  command-line interface for browser automation designed for coding agents".**
+**In early 2026, Playwright introduced [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), ***a  command-line interface for browser automation designed for coding agents***.**
 
 Playwright officially recommends its CLI for coding-agent workflows due to significantly lower token consumption, improved session scalability.
 
@@ -45,9 +45,7 @@ This repository provides Playwright-CLI agent definitions (markdown files) that 
 
 - Explore and browse a site and create a test plan of the explored test scenarios 
 - Generate playwright tests (spec.ts files) for each scenario in the plan
-- Run the tests to verify all tests passed. If there are failing tests it debugs the root cause, repairs the failing tets or -if the fail is an actual fail,  marks the test  with the `fix.me fixture`
-
-PONER UN TITULO DESCRIPTIVO AQUI
+- Run the tests to verify all tests passed. If there are failing tests it debugs the root cause, repairs the failing test or, if it can't,  marks the test  with the `fix.me` fixture
 
 Each of these workflows can be run is any AI-assisted development environments such as Codex, Claude Code or Cursor.
 
@@ -57,10 +55,10 @@ All the agents rely on `Playwright CLI` to do their job and do not use Playwrigh
 
 All agents are fully autonomous and will execute their task in one go. However, they may ocassionally ask the user for guidance if they encounter a decision for which they require permissions they don't have under their current settings (e.g. network requests outside their workspace) 
 
+This means they do not use any Playwright MCP tools, nor any other MCP. 
 
-This means they do not use any Playwright MCP tools, nor any other MCP. 
 ---
-This means they do not use any Playwright MCP tools, nor any other MCP. 
+
 ## Use cases
 
 You can use just one of the agents, a combination of them, or all of them depending on your workflow.

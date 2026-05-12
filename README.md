@@ -30,7 +30,10 @@ they are constantly consuming  full accessibility/DOM tree snapshots inside the 
 
 With Playwright CLI, agents work with so-called semantic or ref-based snapshots, which are more compact structures. 
 
-In early 2026, Microsoft/Playwright introduced Playwright CLI  and officially recommended it for coding-agent workflows due to significantly lower token consumption, improved session scalability.
+**In early 2026, Playwright introduced [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), "a  command-line interface for browser automation designed for coding agents".**
+
+Playwright officially recommends its CLI for coding-agent workflows due to significantly lower token consumption, improved session scalability.
+
 
 Note: There are use cases where MCP-based agents would still be arguably prefered over CLI (e.g. rich exploratory testing sessions,  debugging complex UI bugs). 
 

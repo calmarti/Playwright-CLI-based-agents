@@ -47,7 +47,7 @@ This repository provides Playwright-CLI agent definitions (markdown files) that 
 - Generate playwright tests (spec.ts files) for each scenario in the plan
 - Run the tests to verify all tests passed. If there are failing tests it debugs the root cause, repairs the failing test or, if it can't,  marks the test  with the `fix.me` fixture
 
-Each of these workflows can be run is any AI-assisted development environments such as Codex, Claude Code or Cursor.
+Each of these workflows can be run in any AI-assisted development environment such as Codex, Claude Code, GitHub Copilot or Cursor.
 
 The full workflow (planning, code generation and debugging/fixing tests) is, by its own nature, sequential (as opposed to parallel).
 
@@ -55,26 +55,24 @@ All the agents rely on `Playwright CLI` to do their job and do not use Playwrigh
 
 All agents are fully autonomous and will execute their task in one go. However, they may ocassionally ask the user for guidance if they encounter a decision for which they require permissions they don't have under their current settings (e.g. network requests outside their workspace) 
 
-This means they do not use any Playwright MCP tools, nor any other MCP. 
-
 ---
 
 ## Use cases
 
-You can use just one of the agents, a combination of them, or all of them depending on your workflow.
+You can use just one of the agents, a combination of them, or all of them depending on your needs 
 
 ### Planner agent workflow
 
-- Planner will thoroughly explore the site (or a feature/user story you decide) and create a test plan in a markdown file. 
-- It will only use Playwright CLI
-- You can prompt it to plan test scenarios for a specific page/feature or for the entire site (however, for better quality of output we recommend to plan one page/feature at a time)
+- Planner will thoroughly explore the site (or a page/feature) and create a test plan in a markdown file. 
 
- This plan can serve different purposes, depending on the user:
+Note: You can prompt it to plan test scenarios for a specific page/feature or for the entire site (however, for better quality of output if your site under testing is large enough I recommend to plan one feature at a time)
+
+This test plan can serve different purposes, depending on the user:
 
  **Manual testers**:
 
 - It is a detailed test suite where each test scenario has detailed steps, preconditions and expected results. 
-- Manual testers can use it as instructions for execution or as a first overview of possible test scenarios.   
+- Manual testers can use it as instructions for execution or as a *brainstorm* of possible test scenarios.   
 
 **Automation testers**
 
@@ -86,7 +84,9 @@ You can use just one of the agents, a combination of them, or all of them depend
 - Planner outputs a test plan.
 - Generator will read the plan and implement each test scenario as a `spec.ts` file, probably using the suggested locators and assertions.
 - It will stop when it finishes implementing the code. 
-- Generator will only use Playwright CLI to inspect the site when test plan info is missing, outdated or just not enough.
+
+Note: Generator will just read the plan and implement code. But it may use Playwright CLI to inspect the site when test plan info is missing, outdated or just not enough.
+
 - **Generator will never run the tests it implements, not will it debug them if they don't pass (that's healer agent's job)**.
 
 ### Planner + Generator + Healer workflow
@@ -95,9 +95,9 @@ You can use just one of the agents, a combination of them, or all of them depend
 - Healer runs the tests
     - If all test pass, healer finishes its work.
     - If there are failing tests, healer debug the root cause:
-        - If root cause is a bug in the test it fixes it and rerun until the test passes
-        - If healer believes (after debugging and retesting) root cause is a bug in the app under test, it marks the test with playwright fixture `test.fixme`
-        - When all failed tests were either fixed or marked with `test.fixme` healer stops.
+        - If root cause is an issue in the test code (e.g., an flaxy locator) it fixes it and rerun until the test passes
+        - If healer believes (after debugging and retesting) root cause is not an automation code issue, it marks the test with playwright fixture `test.fixme`
+        - When all failed tests are either fixed or marked with `test.fixme` healer stops.
 
 ---
 
@@ -128,11 +128,11 @@ npm install -g @playwright/cli
 export default defineConfig({
     ...
 use: {
-    baseURL: 'https://testundersubject.com',
+    baseURL: 'https://appundertest.com',
 ```
-- If the site requires authentication you can provide them in the .env file or in a place of your choice (you should let all the agents know this in the prompt)
+- If the site requires authentication you can provide them in the .env file or in a place of your choice (you should tell the agents know where is this place at prompt time)
 
-- **Important: Even if agents do not need to authenticate delete the original contents of .env file** otherwise the prompt will be noisy, confusing the agent, which may result in low quality output.
+- **Important: Even if agents do not need to authenticate delete the original contents of .env file** otherwise the prompt will be noisy and it may confuse the agent. This in turn may result in low quality output.
 
 ### Agent permissions
 
@@ -148,7 +148,7 @@ Examples:
 
 - If you rerun planner agent you should previously delete (or save somewhere else) the test plan it generated in a previous run
 
-- If you run planner/generator agent you should previously delete `spec.ts` files  with implemented tests that may have been generated in the previous run
+- If you run planner/ or generator agent you should previously delete `spec.ts` files  with implemented tests that may have been generated in the previous run
 
 
 ## Example prompts 

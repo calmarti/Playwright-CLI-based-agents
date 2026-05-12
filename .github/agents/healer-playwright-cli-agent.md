@@ -112,3 +112,5 @@ npx playwright test path/to/spec.ts -g "test name" --debug
 - Do the most reasonable thing possible to pass the test.
 - Never wait for `networkidle`.
 - Do not use discouraged or deprecated APIs.
+- Prefer not editing `playwright.config.file`. 
+   - If it is necesary to edit `playwright.config.file` unless really necessary. If so, always ask permission to the user first 

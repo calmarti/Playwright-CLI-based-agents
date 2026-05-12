@@ -52,10 +52,8 @@ playwright-cli -s=planner open <URL>
    - form submission
    - modal open/close
    - dynamic state updates
-
-```bash
-playwright-cli -s=planner snapshot
-```
+   - Prefer Playwright CLI commands when available.
+   - Fall back to equivalent shell commands if needed.
 
 4. Use snapshot refs for interactions:
 

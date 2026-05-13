@@ -104,7 +104,7 @@ Note: Generator will just read the plan and implement code. However, it may use 
 ```md
 # <Feature or App Name> Test Plan
 
-*Whatever is marked with (****) is optional*
+<!--Whatever is marked with (****) is optional-->
 
 ## Overview
 Purpose of the plan and the explored application feature or site
@@ -117,7 +117,7 @@ Purpose of the plan and the explored application feature or site
 (Users, required inputs)
 
 ## Explored Areas (****)
-(Pages, routes, dialogs, forms, flows, and states visited)
+(Pages, user journeys, flows, and states that should be visited)
 
 ## Test Scenarios
 
@@ -137,7 +137,7 @@ Purpose of the plan and the explored application feature or site
 
 **Suggested Assertions / Locator Hints:** (****)
 
-**Notes:**
+**Notes:** (****)
 
 ## Edge Cases and Negative Coverage 
 

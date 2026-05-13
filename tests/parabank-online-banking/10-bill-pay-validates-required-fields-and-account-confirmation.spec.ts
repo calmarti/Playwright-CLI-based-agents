@@ -30,7 +30,6 @@ test.describe('ParaBank Online Banking', () => {
     await expect(page.getByText('State is required.')).toBeVisible();
     await expect(page.getByText('Zip Code is required.')).toBeVisible();
     await expect(page.getByText('Phone number is required.')).toBeVisible();
-    await expect(page.getByText('Account number is required.')).toBeVisible();
     await expect(page.getByText('Account number is required.')).toHaveCount(2);
     await expect(page.getByText('The amount cannot be empty.')).toBeVisible();
 

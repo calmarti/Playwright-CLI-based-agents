@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 test.describe('ParaBank Online Banking', () => {
   test('Public customer care form validates required fields and accepts a message', async ({ page }) => {
     await page.goto('');
-    await page.getByRole('link', { name: 'contact' }).click();
+    await page.getByRole('link', { name: 'contact', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Customer Care' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Send to Customer Care' }).click();

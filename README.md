@@ -10,8 +10,7 @@ English | [🇪🇸 Español](README.es.md)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-Agents-412991?logo=openai&logoColor=white)
-![Claude Agents](https://img.shields.io/badge/Claude-Agents-D97757)
-![Cursor Agents](https://img.shields.io/badge/Cursor-Agents-000000?logo=cursor&logoColor=white)
+![OpenCode](https://img.shields.io/badge/OpenCode-AI%20Coding%20Agent-black?style=for-the-badge&logo=github)
 ![CLI First](https://img.shields.io/badge/CLI-First-1f6f4a)
 ![Status](https://img.shields.io/badge/Status-Experimental-red)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
@@ -57,7 +56,7 @@ All agents are fully autonomous and will execute their task in one go. However, 
 
 ---
 
-## Use cases
+## Some use cases
 
 You can use just one of the agents, a combination of them, or all of them depending on your needs 
 
@@ -85,7 +84,7 @@ This test plan can serve different purposes, depending on the user:
 - Generator will read the plan and implement each test scenario as a `spec.ts` file, probably using the suggested locators and assertions.
 - It will stop when it finishes implementing the code. 
 
-Note: Generator will just read the plan and implement code. But it may use Playwright CLI to inspect the site when test plan info is missing, outdated or just not enough.
+Note: Generator will just read the plan and implement code. However, it may use Playwright CLI to inspect the site when test plan info is missing, outdated or just not enough.
 
 - **Generator will never run the tests it implements, not will it debug them if they don't pass (that's healer agent's job)**.
 
@@ -95,15 +94,22 @@ Note: Generator will just read the plan and implement code. But it may use Playw
 - Healer runs the tests
     - If all test pass, healer finishes its work.
     - If there are failing tests, healer debug the root cause:
-        - If root cause is an issue in the test code (e.g., an flaxy locator) it fixes it and rerun until the test passes
+        - If root cause is an issue in the test code (e.g., an flaky locator) it fixes it and rerun until the test passes
         - If healer believes (after debugging and retesting) root cause is not an automation code issue, it marks the test with playwright fixture `test.fixme`
         - When all failed tests are either fixed or marked with `test.fixme` healer stops.
+
+## Full autonomous workflow (not recommended)
+
+You could write a prompt with all 3 agent definition files in context describing a sequential autonomous non-stop worflow. This would trigger planner to write a plan that generator would pick up and implement the tests that eventually would be run by healer, which would fix any failing test. 
+
+However, agents will make mistakes and you will need to iterate a few times before you get the output you need. This means a fully autonomous workflow is not probably the best idea when working with these agents. We recommend running each agent workflow separately. 
+
 
 ---
 
 ## Local setup
 
-You need to have any of these: codex app, codex VSC extension, claude code app, claude code VSC extension, cursor, cline or any other app/extension with agentic capabilities.
+You need to have any of these: Codex app / Codex VSC extension, OpenCode app, Claude Code, Cursor or any other app/extension with agentic capabilities.
 
 You need to use at least Node 20 (*Node 22 is recommended)*  
 
@@ -128,27 +134,27 @@ npm install -g @playwright/cli
 export default defineConfig({
     ...
 use: {
-    baseURL: 'https://appundertest.com',
+    baseURL: 'https://yourappundertest.com',
 ```
-- If the site requires authentication you can provide them in the .env file or in a place of your choice (you should tell the agents know where is this place at prompt time)
+- If the site requires authentication you can provide test user credentials in the .env file or in a place of your choice (you should tell the agent the location of credentials location at prompt time)
 
-- **Important: Even if agents do not need to authenticate delete the original contents of .env file** otherwise the prompt will be noisy and it may confuse the agent. This in turn may result in low quality output.
+- **Important: Even if agents do not need to authenticate in the app under test delete the original contents of .env file**, otherwise the prompt will be noisy and it may confuse the agent. This in turn may result in low quality output.
 
 ### Agent permissions
 
-- Make sure your agent has read/write/run permissions (for example: if you are using Codex, set permissions to `default permissions`)
+- Provide your agent with read/write/run permissions limited to your project/workspace (for example: if you are using Codex, set permissions to `default permissions`)
 
 ### Agent context
 
-- Make sure you add the agent definition markdown file in the agent context 
+- Add the agent definition markdown file to the agent context in your agent UI (e.g. Codex VSC extenstion UI)
 
-- Before running an agent **always make sure their context is not polluted** with agent-generated output files from previous runs, nor with human generated files (e.g. `test-results` folder) or any reports your manual runs may have created. 
+- Before running an agent **always make sure their the project is not polluted** with agent-generated output files from previous runs (old test plans, old `spec.ts` files), nor with human generated files (e.g. `test-results` folder) or any reports your manual runs may have created. 
 
 Examples: 
 
 - If you rerun planner agent you should previously delete (or save somewhere else) the test plan it generated in a previous run
 
-- If you run planner/ or generator agent you should previously delete `spec.ts` files  with implemented tests that may have been generated in the previous run
+- If you run planner or generator agent you should previously delete `spec.ts` files with implemented tests that may have been generated in the previous run
 
 
 ## Example prompts 

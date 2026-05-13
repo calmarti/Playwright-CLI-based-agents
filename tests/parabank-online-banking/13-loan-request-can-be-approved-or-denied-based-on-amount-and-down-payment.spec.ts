@@ -30,7 +30,7 @@ test.describe('ParaBank Online Banking', () => {
 
     await expect(page.getByRole('heading', { name: 'Loan Request Processed' })).toBeVisible();
     await expect(page.getByText('Status:')).toBeVisible();
-    await expect(page.getByText('Approved')).toBeVisible();
+    await expect(page.locator('#loanStatus')).toHaveText('Approved');
     await expect(page.getByText('Congratulations, your loan has been approved.')).toBeVisible();
     await expect(page.locator('#newAccountId')).toBeVisible();
 
@@ -42,7 +42,7 @@ test.describe('ParaBank Online Banking', () => {
 
     await expect(page.getByRole('heading', { name: 'Loan Request Processed' })).toBeVisible();
     await expect(page.getByText('Status:')).toBeVisible();
-    await expect(page.getByText('Denied')).toBeVisible();
+    await expect(page.locator('#loanStatus')).toHaveText('Denied');
     await expect(page.getByText('We cannot grant a loan in that amount with your available funds.')).toBeVisible();
     await expect(page.locator('#newAccountId')).not.toBeVisible();
   });

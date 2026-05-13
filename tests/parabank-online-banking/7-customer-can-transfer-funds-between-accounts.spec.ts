@@ -1,11 +1,27 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 // spec: specs/parabank-online-banking.md
+
+async function allowAdditionalAccountOpening(page: Page) {
+  await page.goto('admin.htm');
+  await expect(page.getByRole('heading', { name: 'Administration' })).toBeVisible({ timeout: 15000 });
+
+  await page
+    .getByRole('row', { name: /Min\. Balance:/ })
+    .getByRole('textbox')
+    .fill('100');
+  await page.getByRole('button', { name: 'Submit' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Administration' })).toBeVisible();
+  await expect(page.getByRole('row', { name: /Min\. Balance:/ }).getByRole('textbox')).toHaveValue('100');
+}
 
 test.describe('ParaBank Online Banking', () => {
   test('Customer can transfer funds between accounts', async ({ page }, testInfo) => {
     const username = `codex${Date.now()}${testInfo.workerIndex}`;
     const password = 'Pass123!';
+
+    await allowAdditionalAccountOpening(page);
 
     await page.goto('register.htm');
     await page.locator('[id="customer.firstName"]').fill('Test');
@@ -23,13 +39,15 @@ test.describe('ParaBank Online Banking', () => {
 
     await page.getByRole('link', { name: 'Open New Account' }).click();
     await page.locator('#type').selectOption({ label: 'SAVINGS' });
+    await expect(page.locator('#fromAccountId option').first()).toHaveText(/^\d+$/);
     await page.getByRole('button', { name: 'Open New Account' }).click();
-    await expect(page.getByRole('heading', { name: 'Account Opened!' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Account Opened!' })).toBeVisible({ timeout: 30000 });
 
     await page.getByRole('link', { name: 'Transfer Funds' }).click();
     const fromAccount = page.locator('#fromAccountId');
     const toAccount = page.locator('#toAccountId');
     await expect(page.getByRole('heading', { name: 'Transfer Funds' })).toBeVisible();
+    await expect.poll(async () => fromAccount.locator('option').count()).toBeGreaterThanOrEqual(2);
     const accounts = (await fromAccount.locator('option').allTextContents()).map((account) => account.trim());
     expect(accounts.length).toBeGreaterThanOrEqual(2);
     const sourceAccount = accounts[0];

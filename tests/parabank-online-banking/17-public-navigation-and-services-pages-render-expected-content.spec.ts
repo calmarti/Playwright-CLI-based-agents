@@ -28,7 +28,7 @@ test.describe('ParaBank Online Banking', () => {
     await expect(page).toHaveURL(/sitemap\.htm/);
     await expect(page.getByRole('heading', { name: 'Customer Login' })).toBeVisible();
 
-    await page.getByRole('link', { name: 'Home' }).click();
+    await page.getByRole('link', { name: 'Home', exact: true }).click();
     await expect(page).toHaveURL(/index\.htm/);
     await expect(page.getByRole('heading', { name: 'Customer Login' })).toBeVisible();
   });

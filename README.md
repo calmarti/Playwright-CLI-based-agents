@@ -84,9 +84,7 @@ This test plan can serve different purposes, depending on the user:
 
 **Automation testers**
 
-- It contains playwright locator hints and suggested assertions for each test scenario. 
-
-- This can be useful and a time-saver for automation testers that are implementing playwright tests
+- It contains playwright locator hints and suggested assertions for each test scenario. This can be useful and a time-saver for automation testers that are implementing playwright tests
 
 
 ### Planner + Generator workflow

@@ -102,17 +102,14 @@ También puedes proporcionar a Generator tu propio plan de pruebas escrito manua
 <!--Todo lo marcado con (****) es opcional-->
 
 ## Overview
-Purpose of the plan and the explored application feature or site
 
 ## Scope
 
 ## Out of Scope
 
 ## Test Data and Setup
-(Users, required inputs)
 
 ## Explored Areas (****)
-(Pages, user journeys, flows, and states that should be visited)
 
 ## Test Scenarios
 

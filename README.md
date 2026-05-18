@@ -24,13 +24,13 @@ Español | [🇬🇧 English](README.en.md)
 
 Los agentes de Playwright originales están basados en MCP y dependen por tanto de las herramientas (tools) del MCP (Model Context Protocol) de Playwright.
 
-Estos agentes basados en Playwright MCP consumen constantemente capturas (snapshots) del árbol *completo* de accesibilidad/DOM dentro del contexto del agente. Por tanto, se trata de agentes con un consumo de tokens elevado.
+Estos agentes basados en Playwright MCP consumen constantemente capturas (snapshots) completas del llamado árbol de accesibilidad (*accessibility tree*) ó bien del DOM (*Document Object Model*) dentro del contexto del agente. Por tanto, se trata de agentes con un consumo de tokens elevado.
 
 Sin embargo, si el agente trabaja con Playwright CLI, lo que utiliza como referencia de la página bajo prueba son los llamados snapshots semánticos o basados en referencias (*ref-based snapshots*), que son estructuras mucho más compactas.
 
 **A principios de 2026, Playwright introdujo [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), ***una interfaz de línea de comandos para automatización de navegadores diseñada para agentes de código***.**
 
-Playwright recomienda oficialmente utilizar Playwright CLI para flujos de trabajo agénticos debido a que supone un consumo de tokens significativamente menor y sesiones de trabajo *agéntico* más largas.
+Playwright recomienda oficialmente utilizar Playwright CLI para flujos de trabajo agénticos debido a que supone un consumo de tokens significativamente menor y sesiones de trabajo agéntico más largas.
 
 Nota: Existen casos de uso en los que los agentes basados en MCP siguen siendo probablemente preferibles a Playwright CLI (por ejemplo, sesiones de testing exploratorio o depuración de defectos complejos relacionados con la interfaz de usuario).
 
@@ -205,7 +205,7 @@ use: {
 - Añade el archivo markdown de definición del agente al contexto del agente en la interfaz que estes utilizando (por ejemplo, la interfaz de la extensión de Codex para VSC ofrece la opción de agregar ficheros al contexto).
 
 
-### Matén el contexto limpio
+#### Matén el contexto limpio
 
 - Antes de ejecutar un agente **asegúrate siempre de que el proyecto no esté contaminado** con archivos generados por agentes en ejecuciones anteriores (planes de pruebas antiguos, archivos `spec.ts` antiguos), ni con archivos generados manualmente (por ejemplo, la carpeta `test-results`) o cualquier informe que hayas generado en ejecuciones anteriores.
 

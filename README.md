@@ -143,7 +143,7 @@ También puedes proporcionar a Generator tu propio plan de pruebas escrito manua
 - Healer ejecuta los tests:
     - Si todos los tests pasan, healer finaliza su trabajo.
     - Si existen tests fallando, healer depura la causa del fallo:
-        - Si la causa es un problema en el código del test (por ejemplo, un locator inestable, o "*flaky*) lo corrige y vuelve a ejecutarlo hasta que el test pase.
+        - Si la causa es un problema en el código del test (por ejemplo, un locator inestable, o *flaky*) lo corrige y vuelve a ejecutarlo hasta que el test pase.
         - Si healer considera (tras depurar y volver a probar) que la causa del fallo no es un problema del código de automatización, marca el test con la fixture Playwright `test.fixme`.
         - Cuando todos los tests fallidos hayan sido corregidos o marcados con `test.fixme`, healer termina su trabajo.
 

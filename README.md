@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🤖 Playwright CLI Testing Agents
+# 🤖 Agentes de Testing basados en Playwright CLI
 
-Specialized AI agents for Playwright test planning, generation, and healing using Playwright CLI (as opposed to Playwright MCP)
+Agentes de IA especializados en explorar y crear planes de prueba, generar, depurar y reparar tests de Playwright utilizando Playwright CLI (en lugar de Playwright MCP)
 
-English | [🇪🇸 Español](README.es.md)
+Español | [🇬🇧 English](README.en.md) 
 
 ![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -22,87 +22,84 @@ English | [🇪🇸 Español](README.es.md)
 
 ## Playwright CLI vs Playwright MCP
 
-The original Playwright Test Agents are MCP-based and rely on the Model Context Protocol (MCP) tools. 
+Los agentes de Playwright originales están basados en MCP y dependen por tanto de las herramientas (tools) del MCP (Model Context Protocol) de Playwright.
 
-When agents work with Playwright MCP 
-they are constantly consuming  full accessibility/DOM tree snapshots inside the model context.  
+Estos agentes basados en Playwright MCP consumen constantemente capturas (snapshots) del árbol *completo* de accesibilidad/DOM dentro del contexto del agente. Por tanto, se trata de agentes con un consumo de tokens elevado.
 
-With Playwright CLI, agents work with so-called semantic or ref-based snapshots, which are more compact structures. 
+Sin embargo, si el agente trabaja con Playwright CLI, lo que utiliza como referencia de la página bajo prueba son los llamados snapshots semánticos o basados en referencias (*ref-based snapshots*), que son estructuras mucho más compactas.
 
-**In early 2026, Playwright introduced [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), ***a  command-line interface for browser automation designed for coding agents***.**
+**A principios de 2026, Playwright introdujo [Playwright-CLI](https://playwright.dev/agent-cli/introduction?utm_source=chatgpt.com), ***una interfaz de línea de comandos para automatización de navegadores diseñada para agentes de código***.**
 
-Playwright officially recommends its CLI for coding-agent workflows due to significantly lower token consumption and longer agentic testing sessions.
+Playwright recomienda oficialmente utilizar Playwright CLI para flujos de trabajo agénticos debido a que supone un consumo de tokens significativamente menor y sesiones de trabajo *agéntico* más largas.
 
+Nota: Existen casos de uso en los que los agentes basados en MCP siguen siendo probablemente preferibles a Playwright CLI (por ejemplo, sesiones de testing exploratorio o depuración de defectos complejos relacionados con la interfaz de usuario).
 
-Note: There are use cases where MCP-based agents would still be arguably prefered over CLI (e.g. rich exploratory testing sessions,  debugging complex UI bugs). 
+---
 
---- 
+## Visión General
 
-## Overview
+Este repositorio proporciona definiciones de tres agentes Playwright-CLI (ficheros markdown) que pueden utilizarse para ejecutar los siguientes flujos de trabajo:
 
-This repository provides Playwright-CLI agent definitions (markdown files) that can be used to execute these workflows:
+- Explorar y navegar un sitio y crear un plan de pruebas con las casuísticas explorados
+- Generar tests de Playwright (archivos `spec.ts`) para cada caso de prueba definido en el plan
+- Ejecutar los tests para verificar que todos pasan. Si existen tests que fallan, depurar hasta encontrar la causa del fallo, luego reparar el test fallido; o si no es posible, marcar el test con la fixture `fix.me`
 
-- Explore and browse a site and create a test plan of the explored test scenarios 
-- Generate playwright tests (spec.ts files) for each scenario in the plan
-- Run the tests to verify all tests passed. If there are failing tests it debugs the root cause, repairs the failing test or, if it can't,  marks the test  with the `fix.me` fixture
+Cada uno de estos flujos puede ejecutarse en cualquier entorno de desarrollo asistido por IA como Codex, Claude Code, GitHub Copilot o Cursor.
 
-Each of these workflows can be run in any AI-assisted development environment such as Codex, Claude Code, GitHub Copilot or Cursor.
+El flujo completo (planificación, generación de código y depuración/reparación de tests) de estos agentes es, por la propia naturaleza de su trabajo, secuencial (en lugar de paralelo).
 
-The full workflow (planning, code generation and debugging/fixing tests) of these agents is, by the nature of their work, sequential (as opposed to parallel).
+Todos los agentes se sirven de `Playwright CLI` para realizar su trabajo y no utilizan *tools* de Playwright MCP ni ningún otro MCP.
 
-All the agents rely on `Playwright CLI` to do their job and do not use Playwright MCP tools nor any other MCP. 
+Se trata de agentes autónomos que generalmente ejecutarán su tarea de una sola vez. Sin embargo, ocasionalmente pueden detenerse para solicitar permiso al usuario si encuentran alguna tarea que requiere permisos adicionale a los que ya les fueron otorgados (por ejemplo, peticiones de red fuera de su workspace).
 
-All agents are fully autonomous and will generally execute their task in one go. However, they may ocassionally stop to ask user's permission if they encounter a decision for which they need permissions out of their their current settings (e.g. network requests outside their workspace) 
-
-Each agent definition, instructions and guardrails are in these markdown files:
+Cada definición de agente, instrucciones y limitaciones de comportamiento (*guardrails*) están en estos archivos markdown:
 
 - `planner-playwright-cli-agent.md`
-- `generator-playwight-cli-agent.md` 
+- `generator-playwight-cli-agent.md`
 - `healer-playwright-cli-agent.md`
 
 ---
 
-## Some use cases
+## Algunos Casos de Uso
 
-You can use just one of the agents, a combination of them, or all of them depending on your needs 
+Puedes utilizar solo uno de los agentes, una combinación de ellos o todos dependiendo de tus necesidades.
 
-### Planner agent workflow
+### Agente Planner
 
-- Planner will thoroughly explore the site (or a page/feature) and create a test plan in a markdown file. 
+- Planner explorará exhaustivamente el sitio (o una página/historia de usuario) y creará un plan o lista de casos de pruebas en un archivo markdown. 
 
-Note: You can prompt it to plan test scenarios for a specific page/feature or for the entire site (however, for better quality of output if your site under testing is large enough I recommend to plan one feature at a time)
+Nota: Puedes pedirle que cree un plan de pruebas  para una página/historia de usuario específica o para el sitio completo (sin embargo, si tu sitio bajo prueba es suficientemente grande/complejo es recomendable pedirle que cree un plan de prueba por historia de usuario).
 
-This test plan can serve different purposes, depending on the user:
+Este plan de pruebas puede tener distinta utilidad  según quien lo consuma:
 
- **Manual testers**:
+**Testers Manuales**:
 
-- It is a detailed test suite where each test scenario has detailed steps, preconditions and expected results. 
+- El plan es una suite de pruebas detallada donde cada caso de prueba contiene pasos detallados, precondiciones y resultados esperados.
 
-- Manual testers can use it as:
-    - Straightforward instructions for execution.  
-    - A *brainstorm* of possible test scenarios. These test case list can then be refined manually.  
+- Los testers manuales pueden utilizarlo como:
+    - Instrucciones de ejecución.
+    - Como una *lluvia de ideas* de posibles escenarios de prueba. Esta lista de casos de prueba puede luego refinarse manualmente.
 
-**Automation testers**
+**Testers de Automatización**
 
-- It contains playwright locator hints and suggested assertions for each test scenario. This can be useful and a time-saver for automation testers that are implementing playwright tests
+- El plan contiene sugerencias de *locators* y *assertions* de Playwright para cada caso de prueba.Esto puede ahorrar tiempo a testers de automatización que estén implementando tests de Playwright.
 
+### Agente Planner + Generator
 
-### Planner + Generator workflow
+- Planner genera un plan de pruebas.
+- Generator leerá el plan e implementará cada caso de prueba como un archivo `spec.ts`, utilizando los *locators* y *assertions* sugeridos en el plan.
+- Se detendrá cuando termine de implementar el código.
 
-- Planner outputs a test plan.
-- Generator will read the plan and implement each test scenario as a `spec.ts` file, probably using the suggested locators and assertions.
-- It will stop when it finishes implementing the code. 
+Nota: Si bien la tarea de Generator es leer los casos del plan e implementarlos, podría utilizar Playwright CLI para inspeccionar el sitio por sí mismo si nota que la información del plan de pruebas es insuficiente o está desactualizada.
 
-Note: Generator will just read the plan and implement code. However, it may use Playwright CLI to inspect the site when test plan info is missing, outdated or just not enough.
+**Generator nunca ejecutará los tests que implementa, ni depurará tests "rotos" (ese es el trabajo del agente healer)**.
 
-- **Generator will never run the tests it implements, not will it debug them if they don't pass (that's healer agent's job)**.
-
-- You can also provide generator with your own human-written test plan, but for generator to better understand the plan it should be written in a markdown file using this template:
+También puedes proporcionar a Generator tu propio plan de pruebas escrito manualmente, pero para que generator pueda entenderlo debe estar escrito en inglés siguiendo esta plantilla (y en formato markdown):
 
 ```md
 # <Feature or App Name> Test Plan
 
-<!--Whatever is marked with (****) is optional-->
+<!--Todo lo marcado con (****) es opcional-->
 
 ## Overview
 Purpose of the plan and the explored application feature or site
@@ -137,86 +134,88 @@ Purpose of the plan and the explored application feature or site
 
 **Notes:** (****)
 
-## Edge Cases and Negative Coverage 
+## Edge Cases and Negative Coverage
 
 ## Risks and Gaps (****)
-
-
-
 ```
 
+### Workflow Planner + Generator + Healer
 
+- Planner genera un plan de pruebas.
+- Generator genera archivos `spec.ts`, uno por cada caso definido en el plan.
+- Healer ejecuta los tests:
+    - Si todos los tests pasan, healer finaliza su trabajo.
+    - Si existen tests fallando, healer depura la causa del fallo:
+        - Si la causa es un problema en el código del test (por ejemplo, un locator inestable, o "*flaky*) lo corrige y vuelve a ejecutarlo hasta que el test pase.
+        - Si healer considera (tras depurar y volver a probar) que la causa del fallo no es un problema del código de automatización, marca el test con la fixture Playwright `test.fixme`.
+        - Cuando todos los tests fallidos hayan sido corregidos o marcados con `test.fixme`, healer termina su trabajo.
 
-### Planner + Generator + Healer workflow
-- Planner outputs a test plan.
-- Generator outputs `spec.ts` files, one per test scenario defined in the plan.
-- Healer runs the tests
-    - If all test pass, healer finishes its work.
-    - If there are failing tests, healer debugs the root cause:
-        - If root cause is an issue in the test code (e.g., an flaky locator) it fixes it and rerun it until the test passes
-        - If healer believes (after debugging and retesting) root cause is not an automation code issue, it marks the test with playwright fixture `test.fixme`
-        - When all failed tests are either fixed or marked with `test.fixme` healer stops.
+## Workflow completamente autónomo (no recomendado)
 
-## Full autonomous workflow (not recommended)
+Podrías escribir un prompt (con los 3 archivos de definición de agentes en contexto) describiendo un workflow autónomo secuencial y sin interrupciones. Tras esto planner escribirá un plan que generator luego leerá para implementar tests Playwright que finalmente serían ejecutados por healer, quién también corregiría cualquier test fallido.
 
-You could write a prompt with all 3 agent definition files in context describing a sequential autonomous non-stop worflow. This would trigger planner to write a plan that generator would pick up and implement Playwright tests that eventually would be run by healer, which would also fix any failing test. 
+Sin embargo, los agentes cometen errores y lo más probable es que necesites iterar unas cuantas veces antes de obtener el resultado que deseas. 
 
-However, agents make mistakes and you will most likely need to iterate a few times before you get the output you want. This is why a fully autonomous workflow is not probably the best idea when working with these agents. We recommend running each agent workflow separately. 
-
+Por eso, un workflow completamente autónomo probablemente no sea el más adecuado para estos agentes.
 
 ---
 
-## Local setup
+## Instalación local
 
-You need to have any of these: Codex app / Codex VSC extension, GitHub Copilot, OpenCode app, Claude Code, Cursor or any other app/extension with agentic capabilities.
+Necesitas disponer de alguno de estos: Codex / extensión de Codex para VSC, GitHub Copilot, OpenCode, Claude Code, Cursor o cualquier otra aplicación/extensión con capacidad agéntica.
 
-You need to use at least Node 20 (*Node 22 is recommended)*  
+Necesitas utilizar al menos Node 20 (*se recomienda Node 22*).
 
-
-### Install dependencies:
+### Instalar dependencias:
 
 ```sh
 npm -D install
 ```
-### Install Playwright CLI (globally)
+
+### Instalar Playwright CLI (globalmente)
 
 ```sh
 npm install -g @playwright/cli
 ```
-### Project configuration and test data
 
-- Out of the box the project is configured to test a demo site (`parabank.parasoft.com`) and has a test user credentials in .env file. You should update the base URL as follows:
+### Configuración del proyecto y datos de prueba
 
-- In `playwright.config.ts` set baseUrl to the that of the target site:
+- Por defecto, el proyecto está configurado para probar un sitio demo (`parabank.parasoft.com`) y contiene las credenciales de un usuario de prueba en el archivo `.env`. 
+
+- Por tanto, debes actualizar la URL base de la siguiente forma:
+    - En `playwright.config.ts`:
 
 ```ts
 export default defineConfig({
     ...
 use: {
-    baseURL: 'https://yourappundertest.com',
+    baseURL: 'https://miaplicacionbajoprueba.com',
 ```
-- If the site requires authentication you can provide your own test user credentials in the .env file or in a place of your choice (but then you should tell the agent the location of credentials at prompt time)
 
-- **Important: Even if agents do not need to authenticate in the app under test delete the original contents of .env file**, otherwise the prompt will be noisy and it may confuse the agent. This in turn may result in low quality output.
+- Por otra parte, si tu aplicación requiere autenticación puedes proporcionar tus propias credenciales de usuario de prueba en el archivo `.env` o en cualquier otra ubicación (pero entonces deberás indicar al agente dicha ubicación en el prompt).
 
-### Agent permissions
+- **Importante: Incluso si los agentes no necesitan autenticarse en tu aplicación bajo prueba elimina el contenido original del archivo `.env`**. De lo contrario el prompt contendrá ruido innecesario y podría confundir al agente. 
 
-- Provide your agent with read/write/run permissions limited to your project/workspace (for example: if you are using Codex, set permissions to `default permissions`)
+### Permisos del agente
 
-### Agent context
+- Proporciona a tu agente permisos de lectura/escritura/ejecución limitados a tu proyecto/workspace (por ejemplo: si utilizas Codex, establece los permisos a `default permissions`).
 
-- Add the agent definition markdown file to the agent context in your agent UI (e.g. Codex VSC extenstion UI)
+### Contexto del agente
 
-- Before running an agent **always make sure their the project is not polluted** with agent-generated output files from previous runs (old test plans, old `spec.ts` files), nor with human generated files (e.g. `test-results` folder) or any reports your manual runs may have created. 
-
-Examples: 
-
-- If you rerun planner agent you should previously delete (or save somewhere else) the test plan it generated in the previous run
-
-- If you run planner or generator agent you should previously delete `spec.ts` files with implemented tests that may have been generated in the previous run
+- Añade el archivo markdown de definición del agente al contexto del agente en la interfaz que estes utilizando (por ejemplo, la interfaz de la extensión de Codex para VSC ofrece la opción de agregar ficheros al contexto).
 
 
-## Example prompts 
+### Matén el contexto limpio
+
+- Antes de ejecutar un agente **asegúrate siempre de que el proyecto no esté contaminado** con archivos generados por agentes en ejecuciones anteriores (planes de pruebas antiguos, archivos `spec.ts` antiguos), ni con archivos generados manualmente (por ejemplo, la carpeta `test-results`) o cualquier informe que hayas generado en ejecuciones anteriores.
+
+Ejemplos:
+
+- Si vuelves a ejecutar el agente planner debes eliminar previamente (o guardar fuera del proyecto) el plan de pruebas generado en la ejecución anterior.
+
+- Si ejecutas planner o generator debes eliminar previamente los archivos `spec.ts` con tests implementados que puedan haber sido generados en una ejecución anterior.
+
+## Ejemplo de prompts 
 
 ### Planner
 
@@ -229,4 +228,3 @@ Examples:
 ### Healer
 
 ![Healer](./.github/assets/sample_prompt_healer.png)
-

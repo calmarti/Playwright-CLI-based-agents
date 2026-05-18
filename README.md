@@ -151,7 +151,7 @@ También puedes proporcionar a Generator tu propio plan de pruebas escrito manua
 
 Podrías escribir un prompt (con los 3 archivos de definición de agentes en contexto) describiendo un workflow autónomo secuencial y sin interrupciones. Tras esto planner escribirá un plan que generator luego leerá para implementar tests Playwright que finalmente serían ejecutados por healer, quién también corregiría cualquier test fallido.
 
-Sin embargo, los agentes cometen errores y lo más probable es que necesites iterar unas cuantas veces antes de obtener el resultado que deseas. 
+Sin embargo, los agentes cometen errores y lo más probable es que necesites revisar el output de cada agente, iterando varias veces, antes de obtener el resultado que deseas. 
 
 Por eso, un workflow completamente autónomo probablemente no sea el más adecuado para estos agentes.
 
@@ -161,7 +161,7 @@ Por eso, un workflow completamente autónomo probablemente no sea el más adecua
 
 Necesitas disponer de alguno de estos: Codex / extensión de Codex para VSC, GitHub Copilot, OpenCode, Claude Code, Cursor o cualquier otra aplicación/extensión con capacidad agéntica.
 
-Necesitas utilizar al menos Node 20 (*se recomienda Node 22*).
+Debes tener instalado Node 22 o versión superior.
 
 ### Instalar dependencias:
 
@@ -202,7 +202,7 @@ use: {
 - Añade el archivo markdown de definición del agente al contexto del agente en la interfaz que estes utilizando (por ejemplo, la interfaz de la extensión de Codex para VSC ofrece la opción de agregar ficheros al contexto).
 
 
-#### Matén el contexto limpio
+#### Mantén el contexto limpio
 
 - Antes de ejecutar un agente **asegúrate siempre de que el proyecto no esté contaminado** con archivos generados por agentes en ejecuciones anteriores (planes de pruebas antiguos, archivos `spec.ts` antiguos), ni con archivos generados manualmente (por ejemplo, la carpeta `test-results`) o cualquier informe que hayas generado en ejecuciones anteriores.
 
